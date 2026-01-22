@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model RequestSong {
+  id             Int       @id @default(autoincrement())
+  youtubeUrl     String
+  artistName     String
+  songTitle      String
+  requesterName  String
+  reactionType   ReactionType
+  playType       PlayType
+  requestedAt    DateTime
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  dateKey        String    @db.VarChar(10)
+  orderIndex     Int
+  isPlayed       Boolean   @default(false)
+
+  @@index([dateKey])
+  @@index([orderIndex])
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  provider     String
+  providerId   String
+  displayName  String
+  role         AdminRole @default(ADMIN)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([provider, providerId])
+}
+
+enum ReactionType {
+  REACTION
+  NORMAL
+}
+
+enum PlayType {
+  SING
+  PLAYBACK
+}
+
+enum AdminRole {
+  ADMIN
+}
